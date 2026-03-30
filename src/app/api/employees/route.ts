@@ -1,0 +1,65 @@
+import { NextResponse } from "next/server";
+import axios from "axios";
+
+const WP_URL = process.env.WP_API_URL!;
+
+
+const USERNAME = process.env.WP_USERNAME;
+const PASSWORD = process.env.WP_PASSWORD;
+const TOKEN = process.env.WP_JWT_TOKEN!;
+
+// encode auth
+const auth = Buffer.from(`${USERNAME}:${PASSWORD}`).toString("base64");
+
+export async function GET() {
+  const res = await fetch(WP_URL, { cache: "no-store" });
+  const data = await res.json();
+
+  const employees = data.map((emp: any) => ({
+    id: emp.id,
+    name: emp.title.rendered,
+    email: emp.acf.emp_email,
+    code: emp.acf.employee_code,
+    salary: emp.acf.employees_salary,
+    department: emp.acf.employee_department,
+    location: emp.acf.location,
+  }));
+
+  return NextResponse.json(employees);
+}
+
+
+// 🔥 CREATE EMPLOYEE
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const res = await axios.post(
+      WP_URL,
+      {
+        title: body.name,
+        status: "publish",
+        acf: {
+          emp_email: body.email,
+          employee_code: body.code,
+          employees_salary: body.salary,
+          employee_department: body.department,
+          location: body.location,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      }
+    );
+
+    return NextResponse.json(res.data);
+  } catch (error: any) {
+    console.log(error.response?.data);
+    return NextResponse.json(
+      { error: "Failed to create employee" },
+      { status: 500 }
+    );
+  }
+}
