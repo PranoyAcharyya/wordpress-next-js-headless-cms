@@ -2,14 +2,9 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 const WP_URL = process.env.WP_API_URL!;
-
-
-const USERNAME = process.env.WP_USERNAME;
-const PASSWORD = process.env.WP_PASSWORD;
 const TOKEN = process.env.WP_JWT_TOKEN!;
 
-// encode auth
-const auth = Buffer.from(`${USERNAME}:${PASSWORD}`).toString("base64");
+
 
 export async function GET() {
   const res = await fetch(WP_URL, { cache: "no-store" });
