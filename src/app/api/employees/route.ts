@@ -24,7 +24,7 @@ export async function GET() {
 }
 
 
-// 🔥 CREATE EMPLOYEE
+//  CREATE EMPLOYEE
 export async function POST(req: Request) {
   try {
     const body = await req.json();
