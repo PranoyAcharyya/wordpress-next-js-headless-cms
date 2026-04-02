@@ -18,6 +18,8 @@ export async function GET() {
     salary: emp.acf.employees_salary,
     department: emp.acf.employee_department,
     location: emp.acf.location,
+    image:
+    emp._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null,
   }));
 
   return NextResponse.json(employees);
