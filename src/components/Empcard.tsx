@@ -10,6 +10,7 @@ import { Employee } from "@/typescript/types";
 import { Button } from "./ui/button";
 import { useDeleteEmployee } from "@/service/useEmployee";
 import { Binary, BriefcaseBusiness, MapPin, ReceiptIndianRupee } from "lucide-react";
+import { toast } from "sonner";
 
 type Props = {
   emp: Employee;
@@ -46,7 +47,7 @@ const Empcard = ({ emp,onEdit }: Props) => {
         <Button
           variant="destructive"
           className="bg-red-600 text-white"
-          onClick={() => mutation.mutate(emp.id)}
+          onClick={() =>{ mutation.mutate(emp.id) , toast.warning('Data has been deleted')}}
           // disabled={mutation.isPending}
         >
           {mutation.isPending ? "Deleting..." : "Delete"}

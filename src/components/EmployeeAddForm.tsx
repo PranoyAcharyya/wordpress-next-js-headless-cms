@@ -23,6 +23,7 @@ import { Button } from "./ui/button";
 import type { Employee, FormData } from "@/typescript/types";
 import { useCreateEmployee } from "@/service/useEmployee";
 import { useUpdateEmployee } from "@/service/useEmployee";
+import { toast } from "sonner"
 
 export type TaskFormProps = {
   open: boolean;
@@ -88,16 +89,20 @@ const EmployeeAddForm = ({ open, onClose, initialData }: TaskFormProps) => {
         onSuccess: () => {
           reset();
           onClose(false); 
+          toast.success("Data Updated Successfully");
         },
       }
     );
+    
   } else {
     mutation.mutate(data, {
       onSuccess: () => {
         reset();
-        onClose(false); 
+        onClose(false);
+        toast.success("Data added Successfully") 
       },
     });
+    
   }
 };
 

@@ -25,9 +25,13 @@ export default function Home() {
         </Button>
       </div>
       <EmployeeAddForm open={open} onClose={setOpen} initialData={selectedEmp}/>
-      {isLoading && <p>Loding</p>}
+      {isLoading && (
+  <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+    Loading
+  </p>
+)}
      
-      {data?.length === 0 && <p>No Data yet</p>}
+      {data?.length === 0 && <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">No Data yet</p>}
       <div className="container grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6  mx-auto px-4">
         {data?.map((emp: Employee) => (
           <Empcard

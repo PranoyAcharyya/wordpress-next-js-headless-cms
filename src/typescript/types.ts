@@ -1,4 +1,5 @@
-export type FormData = {
+// Base type (shared fields)
+export type EmployeeBase = {
   name: string;
   email: string;
   code: string;
@@ -7,13 +8,11 @@ export type FormData = {
   location: string;
 };
 
-export type Employee = {
+// Form input type (no extra fields)
+export type FormData = EmployeeBase;
+
+// Full employee (extends base)
+export type Employee = EmployeeBase & {
   id: number;
-  name: string;
-  email: string;
-  code: string;
-  salary: number;
-  department: string;
-  location: string;
   image: string | null;
 };
