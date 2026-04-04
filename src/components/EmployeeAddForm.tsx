@@ -80,21 +80,26 @@ const EmployeeAddForm = ({ open, onClose, initialData }: TaskFormProps) => {
     register("department", { required: true });
   }, [register]);
 
-  const onSubmit = (data: FormData) => {
-    if (initialData) {
-      // EDIT
-      updateMutation.mutate({
-        id: initialData.id,
-        data,
-      });
-    } else {
-      // CREATE
-      mutation.mutate(data);
-    }
-
-    reset();
-    onClose(false);
-  };
+ const onSubmit = (data: FormData) => {
+  if (initialData) {
+    updateMutation.mutate(
+      { id: initialData.id, data },
+      {
+        onSuccess: () => {
+          reset();
+          onClose(false); 
+        },
+      }
+    );
+  } else {
+    mutation.mutate(data, {
+      onSuccess: () => {
+        reset();
+        onClose(false); 
+      },
+    });
+  }
+};
 
   useEffect(() => {
     if (initialData) {

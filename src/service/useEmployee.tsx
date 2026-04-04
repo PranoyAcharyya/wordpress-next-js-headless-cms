@@ -68,7 +68,7 @@ export const useCreateEmployee = () => {
   return useMutation({
     mutationFn: createEmployee,
     onSuccess: async() => {
-      await queryClient.invalidateQueries({ queryKey: ["employees"] });
+      await queryClient.refetchQueries({ queryKey: ["employees"] });
     },
   });
 };

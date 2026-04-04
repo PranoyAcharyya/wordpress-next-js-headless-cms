@@ -9,6 +9,7 @@ import {
 import { Employee } from "@/typescript/types";
 import { Button } from "./ui/button";
 import { useDeleteEmployee } from "@/service/useEmployee";
+import { Binary, BriefcaseBusiness, MapPin, ReceiptIndianRupee } from "lucide-react";
 
 type Props = {
   emp: Employee;
@@ -25,17 +26,19 @@ const Empcard = ({ emp,onEdit }: Props) => {
         <p className="text-sm text-muted-foreground">{emp.email}</p>
       </CardHeader>
 
-      <CardContent className="space-y-1 text-sm">
-        <p>
-          <span className="font-medium">Code:</span> {emp.code}
-        </p>
-        <p>
-          <span className="font-medium">Department:</span> {emp.department}
-        </p>
-        <p>
-          <span className="font-medium">Location:</span> {emp.location}
-        </p>
-        <p className="font-semibold text-green-600">₹{emp.salary}</p>
+      <CardContent className="space-y-3 text-sm">
+        <div className="flex gap-2">
+          <Binary className="size-5"/> Employee Code: {emp.code}
+        </div>
+        <div className="flex gap-2">
+          <BriefcaseBusiness className="size-5"/> Department: {emp.department}
+        </div>
+        <div className="flex gap-2">
+         <MapPin className="size-5"/> Location: {emp.location}
+        </div>
+        <div className="font-semibold text-green-600 flex gap-2">
+          <ReceiptIndianRupee className="size-5"/> ₹{emp.salary} per month
+          </div>
       </CardContent>
 
       <CardFooter className="flex justify-end gap-2">
