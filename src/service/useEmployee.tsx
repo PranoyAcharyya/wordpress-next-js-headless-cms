@@ -25,6 +25,30 @@ const createEmployee = async (data: FormData) => {
   return res.data;
 };
 
+//delete employee
+
+const deleteEmployee = async(id:number)=>{
+  const res = await axios.delete(`/api/employees/${id}`);
+  return res.data;
+}
+
+
+//update employee
+
+const updateEmployee = async ({
+  id,
+  data,
+}: {
+  id: number;
+  data: FormData;
+}) => {
+  const res = await axios.post(`/api/employees/${id}`, data);
+  return res.data;
+};
+
+
+// //////////////////////////////////////////////////////////////////////////////////
+
 
 
 // custom query hook to fetch employees
@@ -45,6 +69,33 @@ export const useCreateEmployee = () => {
     mutationFn: createEmployee,
     onSuccess: async() => {
       await queryClient.invalidateQueries({ queryKey: ["employees"] });
+    },
+  });
+};
+
+
+//custom query hook to delete employee
+
+export const useDeleteEmployee = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteEmployee,
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ["employees"] });
+    },
+  });
+};
+
+//custom query hook to update employee
+
+export const useUpdateEmployee = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateEmployee,
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ["employees"] });
     },
   });
 };

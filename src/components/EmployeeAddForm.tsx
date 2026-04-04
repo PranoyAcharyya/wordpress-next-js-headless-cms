@@ -18,17 +18,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react"; 
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import type { FormData } from "@/typescript/types";
+import type { Employee, FormData } from "@/typescript/types";
 import { useCreateEmployee } from "@/service/useEmployee";
+import { useUpdateEmployee } from "@/service/useEmployee";
 
 export type TaskFormProps = {
   open: boolean;
   onClose: (open: boolean) => void;
+  initialData?: Employee | null;
 };
 
-const EmployeeAddForm = ({ open, onClose }: TaskFormProps) => {
+const EmployeeAddForm = ({ open, onClose, initialData }: TaskFormProps) => {
   const [salary, setSalary] = useState<number>(10000);
   const [empId, setEmpId] = useState("");
 
@@ -57,8 +59,9 @@ const EmployeeAddForm = ({ open, onClose }: TaskFormProps) => {
   } = useForm<FormData>();
 
   const mutation = useCreateEmployee();
+  const updateMutation = useUpdateEmployee();
 
-  // ✅ set code once
+  //  set code once
   useEffect(() => {
     if (open) {
       const newId = generateId();
@@ -67,16 +70,53 @@ const EmployeeAddForm = ({ open, onClose }: TaskFormProps) => {
     }
   }, [open, setValue]);
 
-  // ✅ register department manually
+  useEffect(() => {
+    register("code");
+  }, [register]);
+
+  // register department manually
+
   useEffect(() => {
     register("department", { required: true });
   }, [register]);
 
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data);
+    if (initialData) {
+      // EDIT
+      updateMutation.mutate({
+        id: initialData.id,
+        data,
+      });
+    } else {
+      // CREATE
+      mutation.mutate(data);
+    }
+
     reset();
     onClose(false);
   };
+
+  useEffect(() => {
+    if (initialData) {
+      // EDIT mode
+      setValue("name", initialData.name);
+      setValue("email", initialData.email);
+      setValue("code", initialData.code);
+      setValue("salary", initialData.salary);
+      setValue("department", initialData.department);
+      setValue("location", initialData.location);
+
+      setSalary(initialData.salary);
+    } else {
+      // ADD mode → reset everything
+      reset();
+
+      const newId = generateId();
+      setEmpId(newId);
+      setValue("code", newId);
+      setSalary(10000);
+    }
+  }, [initialData, reset, setValue]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -117,7 +157,7 @@ const EmployeeAddForm = ({ open, onClose }: TaskFormProps) => {
           {/* CODE */}
           <Field className="mt-2">
             <FieldLabel>Employee Code</FieldLabel>
-            <Input value={empId} readOnly />
+            <Input value={empId} readOnly type="text" />
           </Field>
 
           {/* SALARY */}
@@ -140,7 +180,10 @@ const EmployeeAddForm = ({ open, onClose }: TaskFormProps) => {
           {/* DEPARTMENT */}
           <Field className="mt-2">
             <FieldLabel>Department</FieldLabel>
-            <Select onValueChange={(val) => setValue("department", val)}>
+            <Select
+              value={initialData?.department}
+              onValueChange={(val) => setValue("department", val)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select Department" />
               </SelectTrigger>
@@ -174,6 +217,7 @@ const EmployeeAddForm = ({ open, onClose }: TaskFormProps) => {
           {/* BUTTONS */}
           <Field orientation="horizontal" className="mt-3">
             <Button
+            disabled={!!initialData}
               type="button"
               variant="outline"
               onClick={() => {
@@ -187,7 +231,13 @@ const EmployeeAddForm = ({ open, onClose }: TaskFormProps) => {
             </Button>
 
             <Button type="submit">
-              {mutation.isPending ? "Creating..." : "Submit"}
+              {initialData
+                ? updateMutation.isPending
+                  ? "Updating..."
+                  : "Update"
+                : mutation.isPending
+                  ? "Creating..."
+                  : "Create"}
             </Button>
           </Field>
         </form>

@@ -50,7 +50,7 @@ export async function POST(req: Request) {
         },
       }
     );
-
+    // console.log("BODY:", body);
     return NextResponse.json(res.data);
   } catch (error: any) {
     console.log(error.response?.data);
@@ -60,3 +60,4 @@ export async function POST(req: Request) {
     );
   }
 }
+
